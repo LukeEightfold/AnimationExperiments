@@ -139,27 +139,27 @@ export default function SVGTestPoint() {
                   />
                 </filter>
                 <mask id="2ndMask">
-                  <g filter="url(#distort)">
-                    <motion.circle
-                      // animate={circleMaskControls}
-                      // initial={false}
-                      fill="white"
-                      // variants={circleVariants}
-                      // custom={[maskX, maskY, radius]}
-                      className="pointer-events-none"
-                      animate={{
-                        // cy: cursorXY.y + 300,
-                        // cx: cursorXY.x + 300,
-                        // transition: { duration: 3 },
-                        cy: cursorXY.y,
-                        cx: cursorXY.x,
-                      }}
-                      // y={cursorXY.y - 100}
-                      // x={cursorXY.x - 100}
+                  {/* <g filter="url(#distort)"> */}
+                  <motion.circle
+                    // animate={circleMaskControls}
+                    // initial={false}
+                    fill="white"
+                    // variants={circleVariants}
+                    // custom={[maskX, maskY, radius]}
+                    className="pointer-events-none"
+                    animate={{
+                      // cy: cursorXY.y + 300,
+                      // cx: cursorXY.x + 300,
+                      // transition: { duration: 3 },
+                      cy: cursorXY.y,
+                      cx: cursorXY.x,
+                    }}
+                    // y={cursorXY.y - 100}
+                    // x={cursorXY.x - 100}
 
-                      r="500"
-                    />
-                  </g>
+                    r="500"
+                  />
+                  {/* </g> */}
                 </mask>
               </defs>
               <BuildingColourSVGInline />

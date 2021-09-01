@@ -6,7 +6,7 @@ interface BlankSquareProps {
   height: number;
   styles: string;
   delay: number;
-  key: number;
+  myKey: number;
 }
 
 const fadeInVariants = {
@@ -25,13 +25,13 @@ export const BlankSquare: React.FC<BlankSquareProps> = ({
   width,
   height,
   styles,
-  key = 1,
+  myKey = 1,
   delay = 0,
 }: BlankSquareProps) => {
   return (
     <motion.div variants={fadeInVariants}>
       <motion.div
-        key={key}
+        key={myKey}
         className={`w-16 pointer-events-none w-${width}  h-${height} ${styles}`}
         initial={{ y: 0 }}
         animate={{ y: -10 }}

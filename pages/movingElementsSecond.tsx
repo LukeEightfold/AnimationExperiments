@@ -180,7 +180,7 @@ export default function MovingElementsSecond() {
               width={16}
               height={16}
               delay={0}
-              key={2}
+              myKey={2}
               styles="absolute  top-16 -right-16 z-0 "
             />
 
@@ -188,7 +188,7 @@ export default function MovingElementsSecond() {
               width={16}
               height={16}
               delay={0}
-              key={3}
+              myKey={3}
               styles="absolute top-24 -left-32 z-0 "
             />
 
@@ -196,7 +196,7 @@ export default function MovingElementsSecond() {
               width={16}
               height={16}
               delay={0}
-              key={4}
+              myKey={4}
               styles="absolute top-0 -left-0 z-0 "
             />
           </motion.div>

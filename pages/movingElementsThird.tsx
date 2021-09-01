@@ -11,12 +11,17 @@ import partcilesConfig from '../config/partcilesConfig';
 import { BuildingColourSVGInline } from '../components/buildingColourInline';
 import { BuildingOutlineInlineSVG } from '../components/buildingOutlineInline';
 import { BlankSquare } from '../components/BlankSquare';
+import Confetti from 'react-confetti';
 
 export default function MovingElementsThird() {
   const [[maskX, maskY], setMask] = useState<number[]>([0, 0]);
   const [hovered, setIsHovered] = useState<boolean>(false);
   const [radius, setRadius] = useState<number>(5);
+  const [levelCompleted, setLevelCompleted] = useState<boolean>(false);
+  const [hotSpotCompleted, setHotSpotCompleted] = useState<boolean>(false);
+  const [confettiOn, setConfettiOn] = useState<boolean>(false);
   const particlesControls = useAnimation();
+  const hotSpotAnimationControls = useAnimation();
 
   const [cursorXY, setCursorXY] = useState({ x: -100, y: -100 });
   const [[conX, conY], setContainerHeightWidth] = useState<
@@ -52,10 +57,8 @@ export default function MovingElementsThird() {
       const newMaskX = (e.layerX / conX) * 1800;
       const newMaskY = (e.layerY / conY) * 1531;
       setMask([newMaskX, newMaskY]);
-      setRadius(1800);
+      setRadius(1800 + 50);
       setIsHovered(true);
-      boxControls.start('show');
-      particlesControls.start('show');
     }
   };
 
@@ -64,8 +67,21 @@ export default function MovingElementsThird() {
     setIsHovered(false);
     setMask([maskX, maskY]);
     setRadius(0);
-    particlesControls.start('hide');
-    boxControls.start('hide');
+  };
+
+  const handleClick = () => {
+    console.log('clicked');
+    setLevelCompleted(!levelCompleted);
+    if (!levelCompleted) {
+      boxControls.start('show');
+      particlesControls.start('show');
+      setTimeout(() => {
+        setConfettiOn(true);
+      }, 1000);
+    } else {
+      boxControls.start('hide');
+      particlesControls.start('hide');
+    }
   };
 
   const particlesVariants = {
@@ -90,6 +106,30 @@ export default function MovingElementsThird() {
         duration: 0.75,
       },
     },
+  };
+
+  const hotSpotVariants = {
+    show: {
+      r: 700,
+      transition: { duration: 0.4 },
+    },
+    hide: {
+      r: 0,
+      transition: { duration: 0.4 },
+    },
+  };
+
+  const toggleHotSpot = () => {
+    console.log('toggle hot spot');
+    setHotSpotCompleted(!hotSpotCompleted);
+    console.log(hotSpotCompleted);
+    if (!hotSpotCompleted) {
+      console.log('should run open');
+      hotSpotAnimationControls.start('show');
+    } else {
+      console.log('should run close');
+      hotSpotAnimationControls.start('hide');
+    }
   };
 
   useEffect(() => {
@@ -151,8 +191,16 @@ export default function MovingElementsThird() {
       exit="hidden"
       variants={pageTransition}
     >
+      <Confetti
+        run={confettiOn}
+        recycle={false}
+        width={1800}
+        height={3000}
+        numberOfPieces={1000}
+      />
       <div
         className="relative grid place-content-center h-screen "
+        onClick={() => toggleHotSpot()}
         ref={shapeDiv}
       >
         <motion.div
@@ -181,7 +229,7 @@ export default function MovingElementsThird() {
               width={16}
               height={16}
               delay={0}
-              key={2}
+              myKey={2}
               styles="absolute  top-16 -right-16 z-0 "
             />
 
@@ -189,7 +237,7 @@ export default function MovingElementsThird() {
               width={16}
               height={16}
               delay={0}
-              key={3}
+              myKey={3}
               styles="absolute top-24 -left-32 z-0 "
             />
 
@@ -197,7 +245,7 @@ export default function MovingElementsThird() {
               width={16}
               height={16}
               delay={0}
-              key={4}
+              myKey={4}
               styles="absolute top-0 -left-0 z-0 "
             />
           </motion.div>
@@ -240,6 +288,36 @@ export default function MovingElementsThird() {
                     result="blur"
                   />
                 </filter>
+                <mask id="3rdMask">
+                  <g filter="url(#distort)">
+                    <motion.circle
+                      className="mask"
+                      animate={{
+                        cy: cursorXY.y + 50,
+                        cx: cursorXY.x + 50,
+                        // transition: { duration: 3 },
+                      }}
+                      // y={cursorXY.y - 100}
+                      // x={cursorXY.x - 100}
+
+                      r="500"
+                      fill="white"
+                    />
+                  </g>
+                </mask>
+                <mask id="4thMask">
+                  <g filter="url(#distort)">
+                    <motion.circle
+                      cx="300"
+                      cy="300"
+                      fill="white"
+                      initial="hide"
+                      animate={hotSpotAnimationControls}
+                      variants={hotSpotVariants}
+                      className="pointer-events-none"
+                    />
+                  </g>
+                </mask>
                 <mask id="2ndMask">
                   <g filter="url(#distort)">
                     <motion.rect
@@ -256,7 +334,22 @@ export default function MovingElementsThird() {
                   </g>
                 </mask>
               </defs>
+              <image
+                id="mystique"
+                href="Building-Composite-Layers-BLURRED.png"
+                height="100%"
+                width="100%"
+                mask="url(#3rdMask)"
+              />
+              <image
+                id="mystique"
+                href="Building-Composite-Layers-BLUE.png"
+                height="100%"
+                width="100%"
+                mask="url(#4thMask)"
+              />
               <BuildingColourSVGInline />
+
               <BuildingOutlineInlineSVG />
             </svg>
 
@@ -281,14 +374,32 @@ export default function MovingElementsThird() {
             ></motion.div>
           </div>
 
-          <Link href="/movingElementsSecond" passHref>
+          <div className="flex justify-between w-full">
+            <Link href="/movingElementsSecond" passHref>
+              <motion.a
+                variants={fadeInVariants}
+                className="rounded-lg bg-gray-200 py-4 mt-8 mr-4 px-8 m-auto block text-center  hover:text-gray-50 hover:bg-gray-400 transition duration-300 ease-in-out"
+              >
+                Navigate
+              </motion.a>
+            </Link>
+
             <motion.a
+              onClick={() => handleClick()}
               variants={fadeInVariants}
-              className="rounded-lg bg-gray-200 py-4 mt-8 px-8 m-auto block text-center w-32 hover:text-gray-50 hover:bg-gray-400 transition duration-300 ease-in-out"
+              className="rounded-lg bg-gray-200 py-4 mt-8 mr-4 px-8 m-auto block text-center hover:text-gray-50 hover:bg-gray-400 transition duration-300 ease-in-out"
             >
-              Navigate
+              Level
             </motion.a>
-          </Link>
+
+            <motion.a
+              onClick={() => toggleHotSpot()}
+              variants={fadeInVariants}
+              className="rounded-lg bg-gray-200 py-4 mt-8 px-8 m-auto block text-center hover:text-gray-50 hover:bg-gray-400 transition duration-300 ease-in-out"
+            >
+              HotSpot
+            </motion.a>
+          </div>
         </motion.div>
 
         <div className="absolute bg-gradient-to-b to-gray-700 from-gray-500 inset-0 grainBackground z-0"></div>
